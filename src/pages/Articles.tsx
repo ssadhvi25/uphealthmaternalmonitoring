@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
@@ -10,8 +10,8 @@ import {
   CalendarRange,
   CheckCircle2,
 } from "lucide-react";
-import { SAMPLE_ARTICLES, DISTRICTS } from "@/data/mockData";
-import { Article } from "@/types";
+
+import { Article, DISTRICTS } from "@/types";
 import {
   classificationBadgeClass,
   classificationLabel,
@@ -54,6 +54,9 @@ const ARCHIVE_FROM = "2026-03-01";
 const TODAY = new Date().toISOString().slice(0, 10);
 
 const Articles: React.FC = () => {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState("");
   const [district, setDistrict] = useState("All Districts");
   const [classification, setClassification] = useState("all");
@@ -63,31 +66,57 @@ const Articles: React.FC = () => {
   const [dateTo, setDateTo] = useState(TODAY);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
+  useEffect(() => {
+    async function loadArticles() {
+      try {
+        const res = await fetch("/api/news/list");
+        const data = await res.json();
+        setArticles(data.articles ?? []);
+      } catch (error) {
+        console.error("Failed to load articles", error);
+        setArticles([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadArticles();
+  }, []);
+
   const filtered = useMemo(() => {
     const fromTs = new Date(dateFrom + "T00:00:00.000Z").getTime();
     const toTs = new Date(dateTo + "T23:59:59.999Z").getTime();
 
-    return SAMPLE_ARTICLES.filter((a) => {
-      const pubTs = new Date(a.publishedAt).getTime();
-      if (pubTs < fromTs || pubTs > toTs) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        if (
-          !a.title.toLowerCase().includes(q) &&
-          !a.summary.toLowerCase().includes(q) &&
-          !a.source.toLowerCase().includes(q) &&
-          !(a.district?.toLowerCase().includes(q)) &&
-          !(a.hospitalName?.toLowerCase().includes(q))
-        )
-          return false;
-      }
-      if (district !== "All Districts" && a.district !== district) return false;
-      if (classification !== "all" && a.classification !== classification) return false;
-      if (language !== "all" && a.language !== language) return false;
-      if (severity !== "all" && a.severity !== severity) return false;
-      return true;
-    }).sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-  }, [search, district, classification, language, severity, dateFrom, dateTo]);
+    return articles
+      .filter((a) => {
+        const pubTs = new Date(a.publishedAt).getTime();
+        if (pubTs < fromTs || pubTs > toTs) return false;
+
+        if (search) {
+          const q = search.toLowerCase();
+          if (
+            !a.title.toLowerCase().includes(q) &&
+            !a.summary.toLowerCase().includes(q) &&
+            !a.source.toLowerCase().includes(q) &&
+            !(a.district?.toLowerCase().includes(q)) &&
+            !(a.hospitalName?.toLowerCase().includes(q))
+          ) {
+            return false;
+          }
+        }
+
+        if (district !== "All Districts" && a.district !== district) return false;
+        if (classification !== "all" && a.classification !== classification) return false;
+        if (language !== "all" && a.language !== language) return false;
+        if (severity !== "all" && a.severity !== severity) return false;
+
+        return true;
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+  }, [articles, search, district, classification, language, severity, dateFrom, dateTo]);
 
   const hasFilters =
     search ||
@@ -107,6 +136,16 @@ const Articles: React.FC = () => {
     setDateFrom(ARCHIVE_FROM);
     setDateTo(TODAY);
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-4 max-w-screen-xl">
+        <div className="app-card p-6 text-sm text-muted-foreground">
+          Loading articles...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 max-w-screen-xl">
@@ -139,7 +178,9 @@ const Articles: React.FC = () => {
             </SelectTrigger>
             <SelectContent>
               {DISTRICT_OPTIONS.map((d) => (
-                <SelectItem key={d} value={d}>{d}</SelectItem>
+                <SelectItem key={d} value={d}>
+                  {d}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -150,7 +191,9 @@ const Articles: React.FC = () => {
             </SelectTrigger>
             <SelectContent>
               {CLASS_OPTIONS.map((o) => (
-                <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -161,7 +204,9 @@ const Articles: React.FC = () => {
             </SelectTrigger>
             <SelectContent>
               {SEVERITY_OPTIONS.map((o) => (
-                <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -172,7 +217,9 @@ const Articles: React.FC = () => {
             </SelectTrigger>
             <SelectContent>
               {LANG_OPTIONS.map((o) => (
-                <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -286,8 +333,7 @@ const Articles: React.FC = () => {
                         {truncate(a.title, 72)}
                       </div>
                       <div className="text-[10px] text-muted-foreground mt-0.5">
-                        {a.language === "hi" ? "हिंदी" : "English"} · Score{" "}
-                        {a.relevanceScore}
+                        {a.language === "hi" ? "हिंदी" : "English"} · Score {a.relevanceScore}
                       </div>
                     </td>
                     <td className="hidden md:table-cell text-sm text-muted-foreground">
@@ -314,17 +360,26 @@ const Articles: React.FC = () => {
                     <td className="hidden xl:table-cell text-xs text-muted-foreground tabular">
                       {formatRelative(a.publishedAt)}
                     </td>
-                     <td>
-                      <a
-                        href={a.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center justify-center hover:text-primary transition-colors"
-                        title="Open original article"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground hover:text-primary" />
-                      </a>
+                    <td>
+                      {a.sourceUrl ? (
+                        <a
+                          href={a.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center justify-center hover:text-primary transition-colors"
+                          title="Open original article"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground hover:text-primary" />
+                        </a>
+                      ) : (
+                        <span
+                          className="inline-flex items-center justify-center text-muted-foreground/40"
+                          title="Source unavailable"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </span>
+                      )}
                     </td>
                   </motion.tr>
                 ))
