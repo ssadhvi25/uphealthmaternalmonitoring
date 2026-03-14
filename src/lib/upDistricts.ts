@@ -75,12 +75,3 @@ export const UP_DISTRICTS = [
   "Unnao",
   "Varanasi",
 ] as const;
-
-export const UP_DISTRICT_ALIASES: Record<string, string[]> = {
-  Prayagraj: ["Allahabad", "Prayagraj"],
-  Ayodhya: ["Ayodhya", "Faizabad"],
-  Amroha: ["Amroha", "J.P. Nagar", "JP Nagar"],
-  Bhadohi: ["Bhadohi", "Sant Ravidas Nagar"],
-  Kheri: ["Lakhimpur Kheri", "Kheri"],
-  Sambhal: ["Sambhal", "Bhim Nagar"],
-};
