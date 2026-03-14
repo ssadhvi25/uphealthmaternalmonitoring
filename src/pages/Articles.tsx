@@ -50,7 +50,6 @@ const SEVERITY_OPTIONS = [
   { value: "low", label: "Low" },
 ];
 
-// Archive start: March 1, 2026
 const ARCHIVE_FROM = "2026-03-01";
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -150,7 +149,6 @@ const Articles: React.FC = () => {
 
   return (
     <div className="space-y-4 max-w-screen-xl">
-      {/* Archive note */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/5 border border-primary/15 text-xs text-primary">
         <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
         <span>
@@ -159,9 +157,7 @@ const Articles: React.FC = () => {
         </span>
       </div>
 
-      {/* Filter bar */}
       <div className="app-card p-4 space-y-3">
-        {/* Row 1: Search + dropdowns */}
         <div className="flex flex-wrap gap-3 items-center">
           <div className="relative flex-1 min-w-48">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -237,7 +233,6 @@ const Articles: React.FC = () => {
           )}
         </div>
 
-        {/* Row 2: Date range */}
         <div className="flex flex-wrap gap-3 items-center">
           <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
             <CalendarRange className="h-3.5 w-3.5" />
@@ -271,7 +266,6 @@ const Articles: React.FC = () => {
         </div>
       </div>
 
-      {/* Results count */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
           <span className="font-semibold text-foreground tabular">{filtered.length}</span>{" "}
@@ -279,7 +273,6 @@ const Articles: React.FC = () => {
         </div>
       </div>
 
-      {/* Table */}
       <div className="app-card p-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full data-table">
@@ -390,7 +383,6 @@ const Articles: React.FC = () => {
         </div>
       </div>
 
-      {/* Article detail panel */}
       <AnimatePresence>
         {selectedArticle && (
           <>
