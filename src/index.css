@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   UP MATERNAL MORTALITY NEWS AGENT — DESIGN SYSTEM
+   All colors MUST be HSL. All spacing on 4/8/12/16/24/32/48/64 scale.
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* Surfaces — soft baby pink palette */
+    --background: 340 60% 96%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 30 30% 99%;
+    --popover-foreground: 240 10% 3.9%;
+
+    /* Brand */
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Neutrals */
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 3.9%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+
+    --accent: 240 5% 94%;
+    --accent-foreground: 240 10% 3.9%;
+
+    /* Semantic */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    /* Borders & inputs */
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 221 83% 53%;
+
+    /* Radius */
+    --radius: 0.5rem;
+
+    /* Sidebar */
+    --sidebar-background: 240 5% 96%;
+    --sidebar-foreground: 240 10% 3.9%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 5% 94%;
+    --sidebar-accent-foreground: 240 10% 3.9%;
+    --sidebar-border: 240 6% 90%;
+    --sidebar-ring: 221 83% 53%;
+
+    /* Card shadows */
+    --shadow-card: 0 0 0 1px rgba(0,0,0,.05), 0 1px 2px 0 rgba(0,0,0,.05);
+    --shadow-card-hover: 0 0 0 1px rgba(0,0,0,.05), 0 4px 6px -1px rgba(0,0,0,.08), 0 2px 4px -2px rgba(0,0,0,.05);
+    --shadow-sidebar: 1px 0 0 0 hsl(var(--border));
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Public Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  /* Tabular nums for all metric / number displays */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* ---------- Card ---------- */
+  .app-card {
+    @apply bg-card rounded-lg p-6;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  .app-card:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* ---------- Metric Card ---------- */
+  .metric-value {
+    @apply font-bold tabular;
+    font-size: 2.5rem;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: hsl(var(--foreground));
+  }
+
+  /* ---------- Table ---------- */
+  .data-table th {
+    @apply font-semibold text-muted-foreground text-xs uppercase tracking-wider py-3 px-4 text-left;
+  }
+  .data-table td {
+    @apply py-3 px-4 text-sm border-b border-border;
+  }
+  .data-table tr:last-child td {
+    @apply border-b-0;
+  }
+  .data-table tbody tr {
+    @apply transition-colors duration-150 cursor-pointer;
+  }
+  .data-table tbody tr:hover {
+    background-color: hsl(var(--accent));
+  }
+
+  /* ---------- Nav ---------- */
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150;
+    color: hsl(var(--sidebar-foreground));
+  }
+  .nav-link:hover {
+    background-color: hsl(var(--sidebar-accent));
+  }
+  .nav-link.active {
+    background-color: hsl(var(--sidebar-primary));
+    color: hsl(var(--sidebar-primary-foreground));
+  }
+
+  /* ---------- Badge ---------- */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .badge-destructive {
+    background-color: hsl(var(--destructive) / 0.12);
+    color: hsl(var(--destructive));
+  }
+  .badge-warning {
+    background-color: hsl(var(--warning) / 0.12);
+    color: hsl(38 75% 35%);
+  }
+  .badge-success {
+    background-color: hsl(var(--success) / 0.12);
+    color: hsl(142 60% 30%);
+  }
+  .badge-info {
+    background-color: hsl(var(--info) / 0.12);
+    color: hsl(199 70% 35%);
+  }
+  .badge-muted {
+    background-color: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+  }
+  .badge-primary {
+    background-color: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary));
+  }
+
+  /* ---------- Severity dots ---------- */
+  .severity-confirmed { @apply w-2 h-2 rounded-full; background-color: hsl(var(--destructive)); }
+  .severity-probable { @apply w-2 h-2 rounded-full; background-color: hsl(var(--warning)); }
+  .severity-unrelated { @apply w-2 h-2 rounded-full; background-color: hsl(var(--muted-foreground)); }
+
+  /* ---------- Scrollbar ---------- */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+}
