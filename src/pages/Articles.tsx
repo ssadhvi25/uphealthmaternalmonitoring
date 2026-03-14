@@ -11,7 +11,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-import { Article, DISTRICTS } from "@/types";
+import type { Article } from "@/types";
+import { UP_DISTRICTS } from "@/lib/upDistricts";
 import {
   classificationBadgeClass,
   classificationLabel,
@@ -31,7 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const DISTRICT_OPTIONS = ["All Districts", ...DISTRICTS.map((d) => d.districtName)];
+const DISTRICT_OPTIONS = ["All Districts", ...UP_DISTRICTS];
 const CLASS_OPTIONS = [
   { value: "all", label: "All Types" },
   { value: "confirmed_maternal_mortality", label: "Confirmed" },
